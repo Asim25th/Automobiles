@@ -1,4 +1,4 @@
-﻿namespace Avtos
+namespace Avtos
 {
     class Avto
     {
@@ -9,6 +9,9 @@
         private float speed; // скорость автомобиля
         private float mileage; // пробег автомобиля
         private float totalmileage; // общий пробег автомобиля
+        private double x2; // конечная координата x2
+        private double y2; // конечная координата x2
+        private double dist; // расстояние между координатами
 
         public void info() // заполнение информации об автомобиле
         {
@@ -24,6 +27,12 @@
             Console.Write("Введите пробег автомобиля: ");
             mileage = (Convert.ToSingle(Console.ReadLine()));
 
+            Console.Write("Введите координату X места прибытия: ");
+            x2 = (Convert.ToSingle(Console.ReadLine()));
+
+            Console.Write("Введите координату Y места прибытия: ");
+            y2 = (Convert.ToSingle(Console.ReadLine()));
+
             Random rnd = new Random();
             distance = rnd.Next(1, 3000);
             speed = rnd.Next(10, 300);
@@ -35,10 +44,11 @@
             Console.WriteLine($"Номер автомобиля: {car_number}");
             Console.WriteLine($"Объем топлива в баке: {fuel} л");
             Console.WriteLine($"Расход топлива на 100 км: {consumption} л");
-            Console.WriteLine($"Пробег автомобиля: {mileage} км");
             Console.WriteLine($"Пройденное расстояние: {distance} км");
             Console.WriteLine($"Скорость автомобиля: {speed} км/ч");
+            Console.WriteLine($"Пробег автомобиля: {mileage} км");
             total_mileage();
+            Console.WriteLine($"Координаты места прибытия: {x2};{y2}");
             Console.ReadKey();
         }
 
@@ -52,6 +62,7 @@
             {
                 Console.WriteLine($"\nСейчас в баке {fuel} л топлива, вы сможете проехать {km_current_fuel} км");
                 Console.WriteLine($"По окончании поездки в баке останется {fuel - remainingfuel} л топлива");
+                coordinates();
 
                 Console.WriteLine("\nВы можете разогнаться или притормозить. Выберите одно из действий:");
                 Console.WriteLine("1. Разогнаться \n2. Притормозить");
@@ -102,6 +113,14 @@
             Console.Write("Введите количество топлива, которое нужно залить: ");
             float fuel_to_be_filled = Convert.ToInt32(Console.ReadLine()); // количество бензина, которое нужно залить
             fuel += fuel_to_be_filled;
+        }
+
+        public void coordinates() // расчет расстояния между координатами
+        {
+            double x1 = 0;
+            double y1 = 0;
+            dist = Math.Sqrt(Math.Pow((x2 - x1), 2) + (Math.Pow((y2 - y1), 2)));
+            Console.WriteLine($"Расстояние между начальными и конечными координатами: {dist}");
         }
 
         public void total_mileage() // общий пробег с учетом пройденного расстояния
