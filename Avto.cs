@@ -9,6 +9,7 @@ namespace Avtos
         private float speed; // скорость автомобиля
         private float mileage; // пробег автомобиля
         private float x = 0; // координата X
+        private float time; // время в пути
         private float distance_traveled = 0; // пройденное расстояние
         private Random rnd = new Random();
 
@@ -58,15 +59,15 @@ namespace Avtos
 
         public void Output() // вывод информации об автомобиле на экран
         {
-            //Console.WriteLine("ИНФОРМАЦИЯ ОБ АВТОМОБИЛЕ");
             Console.WriteLine($"Номер автомобиля: {car_number}");
             Console.WriteLine($"Объем топлива в баке: {Math.Round(fuel, 2)} л");
             Console.WriteLine($"Расход топлива на 100 км: {consumption} л");
             Console.WriteLine($"Расстояние дороги: {Math.Round(distance, 2)} км");
             Console.WriteLine($"Скорость автомобиля: {Math.Round(speed, 2)} км/ч");
+            Console.WriteLine($"Время в дороге: {Math.Round(time, 2)} ч");
             Console.WriteLine($"Текущий пробег автомобиля: {Math.Round(mileage, 2)} км");
             Console.WriteLine($"Текущая координата по оси X: {Math.Round(x, 2)}");
-            Console.WriteLine("\nНажмите Enter, чтобы перейти дальше");
+            Console.WriteLine("Нажмите Enter, чтобы перейти дальше");
             Console.ReadKey();
         }
 
@@ -77,25 +78,32 @@ namespace Avtos
             {
                 float km_current_fuel = ((fuel / consumption)) * 100; // расстояние, которое автомобиль проедет за текущий объем топлива
                 float missing_fuel = ((distance - distance_traveled) * consumption) / 100 - fuel; // недостающее количество топлива для поездки
-                float remaining_fuel = (distance * consumption) / 100; // топливо, отставшееся после поездки
-                
+                float remaining_fuel = (distance * consumption) / 100; // топливо, отставшееся после поездки               
                 if (km_current_fuel >= distance - distance_traveled) // если топлива на всю дорогу
                 {
+                    if (distance_traveled == 0) // если автомобиль доехал до пункта назначения без дозаправки
+                    {
+                        Time(distance); // обновление времени
+                    }
+                    else // если автомобиль хотя бы раз бывал на заправке на этом пути
+                    {
+                        Time(distance - distance_traveled);
+                    }
                     distance_traveled += distance - distance_traveled; // обновление пройденного расстояния
                     Mileage(distance_traveled); // обновление пробега
                     Coordinates(distance_traveled); // обновление координаты
                     fuel = remaining_fuel; // обновление количества топлива в баке после поездки
-                    if (fuel > 60) { fuel  = 60; }
+                    if (fuel > 60) { fuel  = 60; } // если остаток топлива в баке окажется больше объема бака, то по умолчанию устанавливается полный бак - 60 л
 
                     Console.WriteLine($"Вы доехали до пункта назначения, проехав {Math.Round(distance, 2)} км со скоростью {Math.Round(speed, 2)} км/ч.\nТекущий пробег - {Math.Round(mileage, 2)} км, координата по оси X - {Math.Round(x, 2)}.");
                     Console.WriteLine("Нажмите Enter, чтобы перейти дальше");
                     Console.ReadKey();
                     Console.Clear();
                 }
-
                 else // если топлива НЕ хватило на всю дорогу
                 {
-                    distance_traveled += km_current_fuel; // к прйденному расстоянию прибавляем возможное за это количество топлива
+                    Time(km_current_fuel);
+                    distance_traveled += km_current_fuel; // к пройденному расстоянию прибавляем возможное за это количество топлива
                     fuel = 0; // обнуляем объем топлива
                     Mileage(distance_traveled); // обновление пробега
                     Coordinates(distance_traveled); // обновление координаты X
@@ -139,7 +147,7 @@ namespace Avtos
                     else
                     {
                         distance = distance_traveled;
-                        Console.WriteLine("\nВы приняли непростое решение оставить свой путь. Домой возвращаться придется пешком...");
+                        Console.WriteLine("Вы приняли непростое решение оставить свой путь. Домой возвращаться придется пешком...");
                         Console.WriteLine("Нажмите Enter, чтобы перейти дальше");
                         Console.ReadKey();
                         break;
@@ -170,7 +178,12 @@ namespace Avtos
 
         private void Coordinates(float distance) // расчет координаты X
         {
-            x =+ distance;
+            x += distance;
+        }
+
+        private void Time(float distance_traveled) // рассчет времени, проведенного в дороге
+        {
+            time += distance_traveled / speed;
         }
 
         private void Acceleration() // ускорение автомобиля
@@ -187,11 +200,11 @@ namespace Avtos
         {
             float i = rnd.Next(1, 3);
             float j = rnd.Next(1, 3);
-            if (i != j)
+            if (i != j) 
             {
                 Console.WriteLine($"Автомобили {i} и {j} попали в аварию!");
             }
-            else
+            else 
             {
                 Console.WriteLine("Сегодня на дорогах никаких аварий не было!");
             }

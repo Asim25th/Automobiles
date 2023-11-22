@@ -12,14 +12,12 @@
                 cars[i].Move();
                 Console.Clear();
             }
-
             for (int i = 0; i < cars.Length; i++) // вывод информации о каждом автомобиле в конце программы
             {
                 Console.WriteLine($"Автомобиль {i + 1}");
                 cars[i].Output();
                 Console.WriteLine();
             }
-
             cars[0].Accidents();
             Console.ReadKey();
         }
