@@ -71,19 +71,19 @@ namespace Automobiles
                     int i = choice - 1;
                     Console.Clear();
                     Output(cars, i); // вывод информации о выбранном автомобиле
-                    Console.WriteLine();
 
                     if (cars[i].x != 0 && cars[i].distanceTraveled < cars[i].distance) // если был выбран автомобиль, который не проехал весь свой путь до конца
                     {
-                        Console.WriteLine($"Вы проехали {cars[i].distanceTraveled} из {cars[i].distance} км вашего маршрута. Желаете ли вы продолжить путь?");
+                        Console.WriteLine($"\nВы проехали {cars[i].distanceTraveled} из {cars[i].distance} км вашего маршрута. Желаете ли вы продолжить путь?");
                         Console.WriteLine("1. Да, продолжить путь\n2. Нет, вернуться в меню выбора автомобилей");
                         Console.Write("Введите номер вашего выбора: ");
                         int user_choice = Convert.ToInt32(Console.ReadLine());
                         switch (user_choice)
                         {
                             case 1:
-                                Console.Clear();
-                                RemainingFuel(cars, i, missingFuel);
+                                //Console.Clear();
+                                RemainingFuel(cars, i, cars[i].missingFuel);
+                                Console.WriteLine();
                                 Move(cars, i);
                                 break;
                             case 2:
@@ -94,7 +94,7 @@ namespace Automobiles
 
                     else if (cars[i].distanceTraveled == cars[i].distance) // если автомобиль уже проехал все расстояние
                     {
-                        Console.WriteLine("Вы проехали все расстояние вашего маршрута. Желаете ли вы ехать дальше?");
+                        Console.WriteLine("\nВы проехали все расстояние вашего маршрута. Желаете ли вы ехать дальше?");
                         Console.WriteLine("1. Да, продолжить путь\n2. Нет, вернуться в меню выбора автомобилей");
                         Console.Write("Введите номер вашего выбора: ");
                         int userChoice = Convert.ToInt32(Console.ReadLine());
@@ -105,6 +105,7 @@ namespace Automobiles
                                 cars[i].distanceTraveled = 0;
                                 Console.Clear();
                                 Output(cars, i);
+                                Console.WriteLine();
                                 Move(cars, i);
                                 break;
                             case 2:
@@ -115,6 +116,7 @@ namespace Automobiles
 
                     else
                     {
+                        Console.WriteLine();
                         Move(cars, i); // если машина едет впервые
                     }
                 }
@@ -123,13 +125,13 @@ namespace Automobiles
 
         public void Move(Auto[] cars, int i) // езда
         {
-            Console.Clear();
+            //Console.Clear();
             while (cars[i].distanceTraveled < cars[i].distance) // цикл, пока пройденный путь не привысит введенное расстояние
             {
-                kmCurrentFuel = ((cars[i].fuel / cars[i].consumption)) * 100; // расстояние, которое автомобиль проедет за текущий объем топлива
-                missingFuel = ((cars[i].distance - cars[i].distanceTraveled) * cars[i].consumption) / 100 - fuel; // недостающее количество топлива для поездки
-                remainingFuel = (cars[i].distance * cars[i].consumption) / 100; // топливо, отставшееся после поездки               
-                if (kmCurrentFuel >= cars[i].distance - cars[i].distanceTraveled) // если топлива на всю дорогу
+                cars[i].kmCurrentFuel = cars[i].fuel / cars[i].consumption * 100; // расстояние, которое автомобиль проедет за текущий объем топлива
+                cars[i].missingFuel = (cars[i].distance - cars[i].distanceTraveled) * cars[i].consumption / 100 - cars[i].fuel; // недостающее количество топлива для поездки
+                cars[i].remainingFuel = cars[i].distance * cars[i].consumption / 100; // топливо, отставшееся после поездки               
+                if (cars[i].kmCurrentFuel >= cars[i].distance - cars[i].distanceTraveled) // если расстояние, которое автомобиль проедет за текущий объем топлива, больше или равно оставшемуся пути
                 {
                     if (cars[i].distanceTraveled == 0) // если автомобиль доехал до пункта назначения без дозаправки
                     {
@@ -142,20 +144,20 @@ namespace Automobiles
                     Mileage(cars, i, cars[i].distance - cars[i].distanceTraveled); // обновление пробега
                     Coordinates(cars, i, cars[i].distance - cars[i].distanceTraveled); // обновление координаты
                     cars[i].distanceTraveled += cars[i].distance - cars[i].distanceTraveled; // обновление пройденного расстояния
-                    cars[i].fuel = remainingFuel; // обновление количества топлива в баке после поездки
+                    cars[i].fuel = cars[i].remainingFuel; // обновление количества топлива в баке после поездки
                     if (cars[i].fuel > 60) { cars[i].fuel  = 60; } // если остаток топлива в баке окажется больше объема бака, то по умолчанию устанавливается полный бак - 60 л
 
                     Console.WriteLine($"Вы доехали до пункта назначения, проехав {Math.Round(cars[i].distance, 2)} км со скоростью {Math.Round(cars[i].speed, 2)} км/ч.\nТекущий пробег - {Math.Round(cars[i].mileage, 2)} км, координата по оси X - {Math.Round(cars[i].x, 2)}.");
                     Console.WriteLine("Нажмите Enter, чтобы перейти дальше");
                     Console.ReadKey();
-                    Console.Clear();
+                    //Console.Clear();
                 }
                 else // если топлива НЕ хватило на всю дорогу
                 {
-                    Time(cars, i, kmCurrentFuel);
-                    Mileage(cars, i, kmCurrentFuel); // обновление пробега
-                    Coordinates(cars, i, kmCurrentFuel); // обновление координаты X
-                    cars[i].distanceTraveled += kmCurrentFuel; // к пройденному расстоянию прибавляем возможное за это количество топлива
+                    Time(cars, i, cars[i].kmCurrentFuel);
+                    Mileage(cars, i, cars[i].kmCurrentFuel); // обновление пробега
+                    Coordinates(cars, i, cars[i].kmCurrentFuel); // обновление координаты X
+                    cars[i].distanceTraveled += cars[i].kmCurrentFuel; // к пройденному расстоянию прибавляем возможное за это количество топлива
                     cars[i].fuel = 0; // обнуляем объем топлива
 
                     Console.WriteLine($"Вы проехали {Math.Round(cars[i].distanceTraveled, 2)} км со скоростью {Math.Round(cars[i].speed, 2)} км/ч.\nТекущий пробег - {Math.Round(cars[i].mileage, 2)} км, координата по оси X - {Math.Round(cars[i].x, 2)}.");
@@ -163,41 +165,41 @@ namespace Automobiles
                     Console.WriteLine("1. Заправиться и продолжить путь\n2. Не заправляться и бросить автомобиль на пол пути");
                     Console.Write("Введите номер желаемого варианта действий: ");
                     int userChoice = Convert.ToInt32(Console.ReadLine());
-                    Console.Clear();
+                    //Console.Clear();
                     if (userChoice == 1)
                     {
-                        RemainingFuel(cars, i, missingFuel); // заправка автомобиля
-                        Console.WriteLine("После заправки вы можете изменить свою скорость\n1. Ускориться\n2. Замедлиться\n3. Не менять скорость");
+                        RemainingFuel(cars, i, cars[i].missingFuel); // заправка автомобиля
+                        Console.WriteLine("\nПосле заправки вы можете изменить свою скорость\n1. Ускориться\n2. Замедлиться\n3. Не менять скорость");
                         Console.Write("Введите номер желаемого варианта действий: ");
                         int userChoice1 = Convert.ToInt32(Console.ReadLine());
                         if (userChoice1 == 1)
                         {
                             Acceleration(cars, i); // ускорение автомобиля
                             Console.WriteLine($"\nВаша скорость увеличилась до {Math.Round(cars[i].speed, 2)} км/ч.");
-                            Console.WriteLine("Нажмите Enter, чтобы перейти дальше");
+                            Console.WriteLine("Нажмите Enter, чтобы перейти дальше\n");
                             Console.ReadKey();
-                            Console.Clear();
+                            //Console.Clear();
                         }
                         else if (userChoice1 == 2)
                         {
                             Braking(cars, i); // замедление автомобиля
                             Console.WriteLine($"\nВаша скорость снизилась до {Math.Round(cars[i].speed, 2)} км/ч.");
-                            Console.WriteLine("Нажмите Enter, чтобы перейти дальше");
+                            Console.WriteLine("Нажмите Enter, чтобы перейти дальше\n");
                             Console.ReadKey();
-                            Console.Clear();
+                            //Console.Clear();
                         }
                         else
                         {
                             Console.WriteLine($"\nВаша скорость не изменилась - {Math.Round(cars[i].speed, 2)} км/ч.");
-                            Console.WriteLine("Нажмите Enter, чтобы перейти дальше");
+                            Console.WriteLine("Нажмите Enter, чтобы перейти дальше\n");
                             Console.ReadKey();
-                            Console.Clear();
+                            //Console.Clear();
                         }                       
                     }
                     else
                     {
-                        Console.WriteLine("Вы приняли непростое решение оставить свой путь. Домой возвращаться придется пешком...");
-                        Console.WriteLine("Нажмите Enter, чтобы перейти дальше");
+                        Console.WriteLine("\nВы приняли непростое решение оставить свой путь. Домой возвращаться придется пешком...");
+                        Console.WriteLine("Нажмите Enter, чтобы перейти дальше\n");
                         Console.ReadKey();
                         break;
                     }
@@ -227,7 +229,7 @@ namespace Automobiles
 
         private void RemainingFuel(Auto[] cars, int i, float missingFuel) // остаток топлива в баке
         {
-            Console.WriteLine($"В вашем баке сейчас {Math.Round(cars[i].fuel, 2)} л топлива. Чтобы проехать оставшиеся {Math.Round(cars[i].distance - cars[i].distanceTraveled, 2)} км, вам нужно залить {Math.Round(missingFuel, 2)} л топлива в бак.");
+            Console.WriteLine($"\nВ вашем баке сейчас {Math.Round(cars[i].fuel, 2)} л топлива. Чтобы проехать оставшиеся {Math.Round(cars[i].distance - cars[i].distanceTraveled, 2)} км, вам нужно залить {Math.Round(missingFuel, 2)} л топлива в бак.");
             Refilling(cars, i);
         }
 
@@ -237,7 +239,7 @@ namespace Automobiles
             float fuelToBeFilled = Convert.ToInt32(Console.ReadLine()); // количество топлива, которое нужно залить    
             if (cars[i].fuel + fuelToBeFilled <= 0 || cars[i].fuel + fuelToBeFilled > 60) { cars[i].fuel = Convert.ToSingle(CheckingFuel(cars[i].fuel)); }
             cars[i].fuel += fuelToBeFilled;
-            Console.WriteLine($"Теперь в вашем баке {Math.Round(cars[i].fuel, 2)} л топлива.\n");
+            Console.WriteLine($"Теперь в вашем баке {Math.Round(cars[i].fuel, 2)} л топлива.");
         }
 
         private void Mileage(Auto[] cars, int i, float distance) // общий пробег с учетом пройденного расстояния
