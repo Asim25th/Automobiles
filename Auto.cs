@@ -64,6 +64,8 @@ namespace Automobiles
 
                 if (choice == 0) // выход из программы
                 {
+                    Console.WriteLine();
+                    Accidents();
                     System.Environment.Exit(0);
                 }
                 else
@@ -125,7 +127,6 @@ namespace Automobiles
 
         public void Move(Auto[] cars, int i) // езда
         {
-            //Console.Clear();
             while (cars[i].distanceTraveled < cars[i].distance) // цикл, пока пройденный путь не привысит введенное расстояние
             {
                 cars[i].kmCurrentFuel = cars[i].fuel / cars[i].consumption * 100; // расстояние, которое автомобиль проедет за текущий объем топлива
@@ -150,7 +151,6 @@ namespace Automobiles
                     Console.WriteLine($"Вы доехали до пункта назначения, проехав {Math.Round(cars[i].distance, 2)} км со скоростью {Math.Round(cars[i].speed, 2)} км/ч.\nТекущий пробег - {Math.Round(cars[i].mileage, 2)} км, координата по оси X - {Math.Round(cars[i].x, 2)}.");
                     Console.WriteLine("Нажмите Enter, чтобы перейти дальше");
                     Console.ReadKey();
-                    //Console.Clear();
                 }
                 else // если топлива НЕ хватило на всю дорогу
                 {
@@ -165,7 +165,6 @@ namespace Automobiles
                     Console.WriteLine("1. Заправиться и продолжить путь\n2. Не заправляться и бросить автомобиль на пол пути");
                     Console.Write("Введите номер желаемого варианта действий: ");
                     int userChoice = Convert.ToInt32(Console.ReadLine());
-                    //Console.Clear();
                     if (userChoice == 1)
                     {
                         RemainingFuel(cars, i, cars[i].missingFuel); // заправка автомобиля
@@ -178,7 +177,6 @@ namespace Automobiles
                             Console.WriteLine($"\nВаша скорость увеличилась до {Math.Round(cars[i].speed, 2)} км/ч.");
                             Console.WriteLine("Нажмите Enter, чтобы перейти дальше\n");
                             Console.ReadKey();
-                            //Console.Clear();
                         }
                         else if (userChoice1 == 2)
                         {
@@ -186,14 +184,12 @@ namespace Automobiles
                             Console.WriteLine($"\nВаша скорость снизилась до {Math.Round(cars[i].speed, 2)} км/ч.");
                             Console.WriteLine("Нажмите Enter, чтобы перейти дальше\n");
                             Console.ReadKey();
-                            //Console.Clear();
                         }
                         else
                         {
                             Console.WriteLine($"\nВаша скорость не изменилась - {Math.Round(cars[i].speed, 2)} км/ч.");
                             Console.WriteLine("Нажмите Enter, чтобы перейти дальше\n");
                             Console.ReadKey();
-                            //Console.Clear();
                         }                       
                     }
                     else
@@ -273,11 +269,11 @@ namespace Automobiles
             float j = rnd.Next(1, 3);
             if (i != j) 
             {
-                Console.WriteLine($"Автомобили {i} и {j} попали в аварию!");
+                Console.WriteLine($"СРОЧНЫЕ НОВОСТИ: Автомобили {i} и {j} попали в аварию!");
             }
             else 
             {
-                Console.WriteLine("Сегодня на дорогах никаких аварий не было!");
+                Console.WriteLine("ИТОГИ ДНЯ: Сегодня на дорогах никаких аварий не было!");
             }
         }
     }
